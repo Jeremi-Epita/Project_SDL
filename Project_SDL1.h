@@ -81,7 +81,7 @@ private:
   SDL_Surface* window_surface_ptr_;
   SDL_Event window_event_;
 
-  ground *ground_ptr;
+  ground *ground_ptr_;
   // Other attributes here, for example an instance of ground
 
 public:
