@@ -20,14 +20,30 @@ void init() {
 }
 
 namespace {
-// Defining a namespace without a name -> Anonymous workspace
-// Its purpose is to indicate to the compiler that everything
-// inside it is UNIQUELY used within this source file.
+    // Defining a namespace without a name -> Anonymous workspace
+    // Its purpose is to indicate to the compiler that everything
+    // inside it is UNIQUELY used within this source file.
 
-SDL_Surface* load_surface_for(const std::string& path,
-                              SDL_Surface* window_surface_ptr) {
+    /*SDL_Surface* load_surface_for(const std::string& path,
+                                  SDL_Surface* window_surface_ptr) {
 
-  // Helper function to load a png for a specific surface
-  // See SDL_ConvertSurface
-}
+      // Helper function to load a png for a specific surface
+      // See SDL_ConvertSurface
+    }*/
 } // namespace
+
+//application
+application::application(unsigned n_sheep, unsigned n_wolf)
+{
+    this->window_ptr_ = SDL_CreateWindow("Jeu",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,600,600,0);
+    this->window_surface_ptr_ = SDL_GetWindowSurface(this->window_ptr_);
+    SDL_FillRect(this->window_surface_ptr_, NULL, SDL_MapRGB(this->window_surface_ptr_->format, 0, 255, 0));
+    SDL_UpdateWindowSurface(this->window_ptr_);
+}
+
+application::~application()
+{
+    delete this->ground_ptr;
+    SDL_FreeSurface(this->window_surface_ptr_);
+    SDL_DestroyWindow(this->window_ptr_);
+}
