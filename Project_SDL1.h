@@ -65,9 +65,9 @@ class ground {
 private:
   // Attention, NON-OWNING ptr, again to the screen
   SDL_Surface* window_surface_ptr_;
-
   // Some attribute to store all the wolves and sheep
   // here
+  std::vector<animal> *lst_animals;
 
 public:
   ground(SDL_Surface* window_surface_ptr); // todo: Ctor
@@ -75,6 +75,8 @@ public:
   //void add_animal(some argument here); // todo: Add an animal
   void update(); // todo: "refresh the screen": Move animals and draw them
   // Possibly other methods, depends on your implementation
+  void add_sheep();
+  void add_wolf();
 };
 
 // The application class, which is in charge of generating the window
