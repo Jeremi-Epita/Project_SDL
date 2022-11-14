@@ -52,7 +52,6 @@ public:
 class sheep : public animal {
 public:
   sheep(SDL_Surface* window_surface_ptr);
-  ~sheep();
   // todo
   // Ctor
   // Dtor
@@ -72,7 +71,7 @@ private:
   SDL_Surface* window_surface_ptr_;
   // Some attribute to store all the wolves and sheep
   // here
-  std::vector<animal> *lst_animals;
+  std::vector<animal> lst_animals;
 
 public:
   ground(SDL_Surface* window_surface_ptr); // todo: Ctor

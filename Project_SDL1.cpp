@@ -35,6 +35,7 @@ namespace {
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr){
     this->x = rand() % 568;
     this->y = rand() % 568;
+    std::cout << this->x << ","<< this->y << std::endl;
     this->window_surface_ptr_ = window_surface_ptr;
     this->image_ptr_ = IMG_Load(file_path.c_str());
 }
@@ -44,7 +45,8 @@ animal::~animal(){
 }
 
 void animal::draw(){
-    SDL_Rect rsdt = SDL_Rect{this->x,this->y,32,32};
+
+    SDL_Rect rsdt = SDL_Rect{this->x,this->y,64,64};
     SDL_BlitScaled(image_ptr_,NULL,window_surface_ptr_,&rsdt);
 }
 
@@ -62,15 +64,21 @@ ground::ground(SDL_Surface* window_surface_ptr)
 
 void ground::add_sheep()
 {
-    //this->lst_animals->push_back();
+    this->lst_animals.push_back(sheep(this->window_surface_ptr_));
 }
 //todo iterate into the 2 arrays of animals to delete them
 
+void ground::update()
+{
+    for(animal ani : this->lst_animals)
+        ani.draw();
+}
 ////////////////////////////////////////
 //              application           //
 ////////////////////////////////////////
 application::application(unsigned n_sheep, unsigned n_wolf)
 {
+    srand(time(NULL));
     this->window_ptr_ = SDL_CreateWindow("Jeu",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,600,600,0);
     this->window_surface_ptr_ = SDL_GetWindowSurface(this->window_ptr_);
     SDL_FillRect(this->window_surface_ptr_, NULL, SDL_MapRGB(this->window_surface_ptr_->format, 0, 255, 0));
@@ -100,10 +108,11 @@ int application::loop(unsigned period)
     int count = 0;
     while(!SDL_TICKS_PASSED(SDL_GetTicks(), time))
     {
-        std::cout << count++ << std::endl;
+        //std::cout << count++ << std::endl;
         frameStart = SDL_GetTicks();
 
-        //do the stuff here
+        this->ground_ptr_->update();
+        SDL_UpdateWindowSurface(this->window_ptr_);
 
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime)
