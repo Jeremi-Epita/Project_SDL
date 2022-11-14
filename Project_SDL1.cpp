@@ -33,6 +33,8 @@ namespace {
 
 
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr){
+    this->x = rand() % 568;
+    this->y = rand() % 568;
     this->window_surface_ptr_ = window_surface_ptr;
     this->image_ptr_ = IMG_Load(file_path.c_str());
 }
@@ -42,8 +44,12 @@ animal::~animal(){
 }
 
 void animal::draw(){
-    SDL_Rect rsdt = SDL_Rect{100,100,32,32};
+    SDL_Rect rsdt = SDL_Rect{this->x,this->y,32,32};
     SDL_BlitScaled(image_ptr_,NULL,window_surface_ptr_,&rsdt);
+}
+
+
+sheep::sheep(SDL_Surface* window_surface_ptr) : animal(sheep_path,window_surface_ptr){
 }
 
 ////////////////////////////////////////

@@ -29,6 +29,8 @@ private:
                                     // animal to be drawn, also non-owning
   SDL_Surface* image_ptr_; // The texture of the sheep (the loaded image), use
                            // load_surface_for
+  int x;
+  int y;
   // todo: Attribute(s) to define its position
 public:
   animal(const std::string& file_path, SDL_Surface* window_surface_ptr);
@@ -48,6 +50,9 @@ public:
 // Insert here:
 // class sheep, derived from animal
 class sheep : public animal {
+public:
+  sheep(SDL_Surface* window_surface_ptr);
+  ~sheep();
   // todo
   // Ctor
   // Dtor
