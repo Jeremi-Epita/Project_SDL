@@ -33,8 +33,8 @@ namespace {
 
 
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr){
-    this->x = rand() % 568;
-    this->y = rand() % 568;
+    this->x = rand() % 536;
+    this->y = rand() % 536;
     std::cout << this->x << ","<< this->y << std::endl;
     this->window_surface_ptr_ = window_surface_ptr;
     this->image_ptr_ = IMG_Load(file_path.c_str());
