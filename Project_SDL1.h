@@ -13,6 +13,9 @@ constexpr double frame_rate = 60.0; // refresh rate
 constexpr double frame_time = 1. / frame_rate;
 constexpr unsigned frame_width = 1400; // Width of window in pixel
 constexpr unsigned frame_height = 900; // Height of window in pixel
+
+constexpr char sheep_path[] = "../media/sheep.png";
+constexpr char wolf_path[] = "../media/wolf.png";
 // Minimal distance of animals to the border
 // of the screen
 constexpr unsigned frame_boundary = 100;
@@ -28,13 +31,13 @@ private:
                            // load_surface_for
   // todo: Attribute(s) to define its position
 public:
-  animal(const std::string& file_path, SDL_Surface* window_surface_ptr){};
+  animal(const std::string& file_path, SDL_Surface* window_surface_ptr);
   // todo: The constructor has to load the sdl_surface that corresponds to the
   // texture
-  ~animal(){}; // todo: Use the destructor to release memory and "clean up
+  ~animal(); // todo: Use the destructor to release memory and "clean up
                // behind you"
 
-  void draw(){}; // todo: Draw the animal on the screen <-> window_surface_ptr.
+  void draw(); // todo: Draw the animal on the screen <-> window_surface_ptr.
                  // Note that this function is not virtual, it does not depend
                  // on the static type of the instance
 

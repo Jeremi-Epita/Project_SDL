@@ -5,7 +5,6 @@
 #include <numeric>
 #include <random>
 #include <string>
-
 void init() {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) < 0)
@@ -31,6 +30,21 @@ namespace {
       // See SDL_ConvertSurface
     }*/
 } // namespace
+
+
+animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr){
+    this->window_surface_ptr_ = window_surface_ptr;
+    this->image_ptr_ = IMG_Load(file_path.c_str());
+}
+
+animal::~animal(){
+
+}
+
+void animal::draw(){
+    SDL_Rect rsdt = SDL_Rect{100,100,32,32};
+    SDL_BlitScaled(image_ptr_,NULL,window_surface_ptr_,&rsdt);
+}
 
 ////////////////////////////////////////
 //               ground               //
