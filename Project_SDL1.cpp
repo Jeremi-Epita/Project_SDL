@@ -54,6 +54,9 @@ void animal::draw(){
 sheep::sheep(SDL_Surface* window_surface_ptr) : animal(sheep_path,window_surface_ptr){
 }
 
+wolf::wolf(SDL_Surface* window_surface_ptr) : animal(wolf_path,window_surface_ptr){
+}
+
 ////////////////////////////////////////
 //               ground               //
 ////////////////////////////////////////
@@ -67,6 +70,11 @@ void ground::add_sheep()
     this->lst_animals.push_back(sheep(this->window_surface_ptr_));
 }
 //todo iterate into the 2 arrays of animals to delete them
+
+void ground::add_wolf()
+{
+    this->lst_animals.push_back(wolf(this->window_surface_ptr_));
+}
 
 void ground::update()
 {
@@ -86,8 +94,8 @@ application::application(unsigned n_sheep, unsigned n_wolf)
     this->ground_ptr_ = new ground(this->window_surface_ptr_);
     for( int i = 0; i < n_sheep; i++)
         ground_ptr_->add_sheep();
-    //for( int i = 0; i < n_wolf; i++)
-    //    ground_ptr_->add_wolf();
+    for( int i = 0; i < n_wolf; i++)
+        ground_ptr_->add_wolf();
 
 }
 

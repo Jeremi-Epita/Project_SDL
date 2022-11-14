@@ -58,6 +58,11 @@ public:
   // implement functions that are purely virtual in base class
 };
 
+class wolf : public animal{
+public:
+  wolf(SDL_Surface* window_surface_ptr);
+};
+
 // Insert here:
 // class wolf, derived from animal
 // Use only sheep at first. Once the application works
