@@ -37,8 +37,8 @@ animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, in
     this->y = rand() % 536;
     this->speedx = 1;
     this->speedy = 1;
-    this->directionx = rand() % 2 - 1;
-    this->directiony = rand() % 2 - 1;
+    this->directionx = rand() % 2 == 0 ? -1 : 1;
+    this->directiony = rand() % 2 == 0 ? -1 : 1;
     std::cout << this->x << ","<< this->y << std::endl;
     this->window_surface_ptr_ = window_surface_ptr;
     this->image_ptr_ = IMG_Load(file_path.c_str());
@@ -69,6 +69,19 @@ void sheep::move(){
     this->y = this->y + this->directiony * this->speedy;
 }
 
+void wolf::move(){
+    if (this->x <= 0)
+        this->directionx = 1;
+    else if(this->x >=536)
+        this->directionx = -1;
+    else if(this->y <= 0)
+        this->directiony = 1;
+    else if(this->y >=536)
+        this->directiony = -1;
+
+    this->x = this->x + this->directionx * this->speedx;
+    this->y = this->y + this->directiony * this->speedy;
+}
 
 sheep::sheep(SDL_Surface* window_surface_ptr,int type) : animal(sheep_path,window_surface_ptr, type){
 }
@@ -86,19 +99,22 @@ ground::ground(SDL_Surface* window_surface_ptr)
 
 void ground::add_sheep()
 {
-    this->lst_animals.push_back(sheep(this->window_surface_ptr_, 1));
+    this->lst_animals.push_back(new sheep(this->window_surface_ptr_, 1));
 }
 //todo iterate into the 2 arrays of animals to delete them
 
 void ground::add_wolf()
 {
-    this->lst_animals.push_back(wolf(this->window_surface_ptr_, 2));
+   this->lst_animals.push_back(new wolf(this->window_surface_ptr_, 2));
 }
 
 void ground::update()
 {
-    for(animal ani : this->lst_animals)
-        ani.draw();
+    SDL_FillRect(this->window_surface_ptr_, NULL, SDL_MapRGB(this->window_surface_ptr_->format, 0, 255, 0));
+    for (auto itr = lst_animals.begin(); itr != lst_animals.end(); ++itr) {
+        (*itr)->move();
+        (*itr)->draw();
+    }
 }
 ////////////////////////////////////////
 //              application           //

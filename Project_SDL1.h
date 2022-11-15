@@ -50,7 +50,7 @@ public:
                  // Note that this function is not virtual, it does not depend
                  // on the static type of the instance
 
-  virtual void move(){}; // todo: Animals move around, but in a different
+  virtual void move() = 0; // todo: Animals move around, but in a different
                              // fashion depending on which type of animal
 };
 
@@ -59,7 +59,7 @@ public:
 class sheep : public animal {
 public:
   sheep(SDL_Surface* window_surface_ptr,int type);
-  void move();
+  void move() override;
   // todo
   // Ctor
   // Dtor
@@ -69,6 +69,7 @@ public:
 class wolf : public animal{
 public:
   wolf(SDL_Surface* window_surface_ptr, int type);
+  void move();
 };
 
 // Insert here:
@@ -84,12 +85,11 @@ private:
   SDL_Surface* window_surface_ptr_;
   // Some attribute to store all the wolves and sheep
   // here
-  std::vector<animal> lst_animals;
+  std::vector<animal*> lst_animals;
 
 public:
   ground(SDL_Surface* window_surface_ptr); // todo: Ctor
   ~ground(){}; // todo: Dtor, again for clean up (if necessary)
-  //void add_animal(some argument here); // todo: Add an animal
   void update(); // todo: "refresh the screen": Move animals and draw them
   // Possibly other methods, depends on your implementation
   void add_sheep();
