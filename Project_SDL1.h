@@ -31,8 +31,8 @@ private:
   // load_surface_for
   
 protected:
-  int x;
-  int y;
+  float x;
+  float y;
   float speedx;
   float speedy;
   int directionx;
