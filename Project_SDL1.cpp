@@ -35,11 +35,18 @@ namespace {
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type){
     this->x = rand() % 536;
     this->y = rand() % 536;
-    this->speedx = 1;
-    this->speedy = 1;
+    if (this->type == 1){
+        this->speedx = ((double)rand()) / ((double)RAND_MAX) / 0.5 + 0.5;
+        this->speedy = ((double)rand()) / ((double)RAND_MAX) / 0.5 + 0.5;
+    }
+    else{
+        this->speedx = 1;
+        this->speedy = 1;
+    }
     this->directionx = rand() % 2 == 0 ? -1 : 1;
     this->directiony = rand() % 2 == 0 ? -1 : 1;
-    std::cout << this->x << ","<< this->y << std::endl;
+    std::cout << this->type << std::endl;
+    std::cout << this->speedx << ","<< this->speedy << std::endl;
     this->window_surface_ptr_ = window_surface_ptr;
     this->image_ptr_ = IMG_Load(file_path.c_str());
 }
