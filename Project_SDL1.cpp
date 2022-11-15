@@ -32,9 +32,13 @@ namespace {
 } // namespace
 
 
-animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr){
+animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type){
     this->x = rand() % 536;
     this->y = rand() % 536;
+    this->speedx = 1;
+    this->speedy = 1;
+    this->directionx = rand() % 2 - 1;
+    this->directiony = rand() % 2 - 1;
     std::cout << this->x << ","<< this->y << std::endl;
     this->window_surface_ptr_ = window_surface_ptr;
     this->image_ptr_ = IMG_Load(file_path.c_str());
@@ -51,10 +55,25 @@ void animal::draw(){
 }
 
 
-sheep::sheep(SDL_Surface* window_surface_ptr) : animal(sheep_path,window_surface_ptr){
+void sheep::move(){
+    if (this->x <= 0)
+        this->directionx = 1;
+    else if(this->x >=536)
+        this->directionx = -1;
+    else if(this->y <= 0)
+        this->directiony = 1;
+    else if(this->y >=536)
+        this->directiony = -1;
+
+    this->x = this->x + this->directionx * this->speedx;
+    this->y = this->y + this->directiony * this->speedy;
 }
 
-wolf::wolf(SDL_Surface* window_surface_ptr) : animal(wolf_path,window_surface_ptr){
+
+sheep::sheep(SDL_Surface* window_surface_ptr,int type) : animal(sheep_path,window_surface_ptr, type){
+}
+
+wolf::wolf(SDL_Surface* window_surface_ptr,int type) : animal(wolf_path,window_surface_ptr, type){
 }
 
 ////////////////////////////////////////
@@ -67,13 +86,13 @@ ground::ground(SDL_Surface* window_surface_ptr)
 
 void ground::add_sheep()
 {
-    this->lst_animals.push_back(sheep(this->window_surface_ptr_));
+    this->lst_animals.push_back(sheep(this->window_surface_ptr_, 1));
 }
 //todo iterate into the 2 arrays of animals to delete them
 
 void ground::add_wolf()
 {
-    this->lst_animals.push_back(wolf(this->window_surface_ptr_));
+    this->lst_animals.push_back(wolf(this->window_surface_ptr_, 2));
 }
 
 void ground::update()

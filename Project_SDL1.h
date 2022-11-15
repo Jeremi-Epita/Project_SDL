@@ -28,12 +28,19 @@ private:
   SDL_Surface* window_surface_ptr_; // ptr to the surface on which we want the
                                     // animal to be drawn, also non-owning
   SDL_Surface* image_ptr_; // The texture of the sheep (the loaded image), use
-                           // load_surface_for
+  // load_surface_for
+  
+protected:
   int x;
   int y;
+  float speedx;
+  float speedy;
+  int directionx;
+  int directiony;
+  int type;
   // todo: Attribute(s) to define its position
 public:
-  animal(const std::string& file_path, SDL_Surface* window_surface_ptr);
+  animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type);
   // todo: The constructor has to load the sdl_surface that corresponds to the
   // texture
   ~animal(); // todo: Use the destructor to release memory and "clean up
@@ -43,7 +50,7 @@ public:
                  // Note that this function is not virtual, it does not depend
                  // on the static type of the instance
 
-  //virtual void move(){} = 0; // todo: Animals move around, but in a different
+  virtual void move(){}; // todo: Animals move around, but in a different
                              // fashion depending on which type of animal
 };
 
@@ -51,7 +58,8 @@ public:
 // class sheep, derived from animal
 class sheep : public animal {
 public:
-  sheep(SDL_Surface* window_surface_ptr);
+  sheep(SDL_Surface* window_surface_ptr,int type);
+  void move();
   // todo
   // Ctor
   // Dtor
@@ -60,7 +68,7 @@ public:
 
 class wolf : public animal{
 public:
-  wolf(SDL_Surface* window_surface_ptr);
+  wolf(SDL_Surface* window_surface_ptr, int type);
 };
 
 // Insert here:
