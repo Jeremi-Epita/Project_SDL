@@ -61,7 +61,6 @@ animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, in
     }
     this->directionx = rand() % 2 == 0 ? -1 : 1;
     this->directiony = rand() % 2 == 0 ? -1 : 1;
-    std::cout << this->speedx << ","<< this->speedy << std::endl;
     this->window_surface_ptr_ = window_surface_ptr;
     this->image_ptr_ = IMG_Load(file_path.c_str());
 }
@@ -102,7 +101,6 @@ void sheep::move(std::vector<animal*> lst_animal){
 void wolf::move(std::vector<animal*> lst_animal){
 
     animal* nearest = get_nearest(this, 1, lst_animal);
-    
     if (this->x <= nearest->get_x())
         this->directionx = 1;
     else if(this->x >= nearest->get_x())
