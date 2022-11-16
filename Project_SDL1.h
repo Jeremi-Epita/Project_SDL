@@ -23,6 +23,7 @@ constexpr unsigned frame_boundary = 100;
 // Helper function to initialize SDL
 void init();
 
+
 class animal {
 private:
   SDL_Surface* window_surface_ptr_; // ptr to the surface on which we want the
@@ -50,8 +51,11 @@ public:
                  // Note that this function is not virtual, it does not depend
                  // on the static type of the instance
 
-  virtual void move() = 0; // todo: Animals move around, but in a different
-                             // fashion depending on which type of animal
+  virtual void move(std::vector<animal*> lst_animal) = 0; // todo: Animals move around, but in a different
+                           // fashion depending on which type of animal
+    int get_type();
+    int get_x();
+    int get_y();
 };
 
 // Insert here:
@@ -59,7 +63,7 @@ public:
 class sheep : public animal {
 public:
   sheep(SDL_Surface* window_surface_ptr,int type);
-  void move() override;
+  void move(std::vector<animal*> lst_animal) override;
   // todo
   // Ctor
   // Dtor
@@ -69,7 +73,7 @@ public:
 class wolf : public animal{
 public:
   wolf(SDL_Surface* window_surface_ptr, int type);
-  void move();
+  void move(std::vector<animal*> lst_animal);
 };
 
 // Insert here:
@@ -117,3 +121,6 @@ public:
                              // duration the application should terminate after
                              // 'period' seconds
 };
+animal* get_nearest(animal* a, int type_target, std::vector<animal*> lst_animal);
+
+

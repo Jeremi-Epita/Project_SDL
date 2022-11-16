@@ -18,18 +18,33 @@ void init() {
                              std::string(IMG_GetError()));
 }
 
-namespace {
+//namespace {
     // Defining a namespace without a name -> Anonymous workspace
     // Its purpose is to indicate to the compiler that everything
     // inside it is UNIQUELY used within this source file.
 
     /*SDL_Surface* load_surface_for(const std::string& path,
                                   SDL_Surface* window_surface_ptr) {
-
-      // Helper function to load a png for a specific surface
+      // Helper function to load a png for:x
+      //a specific surface
       // See SDL_ConvertSurface
     }*/
-} // namespace
+    animal* get_nearest(animal* a, int type_target, std::vector<animal*> lst_animal){
+        float dst = 10000000;
+        animal* nearest = lst_animal[0];
+        for (auto itr = lst_animal.begin(); itr != lst_animal.end(); ++itr) {
+            if((*itr)->get_type() == type_target){
+               float tmp_dst = std::sqrt(std::pow((a->get_x() - (*itr)->get_x()),2) + std::pow((a->get_y() - (*itr)->get_y()),2));
+                if(tmp_dst<dst)
+                {
+                    dst = tmp_dst;
+                    nearest = (*itr);
+                }
+            }
+        }
+        return nearest;
+    }
+//} // namespace
 
 
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type){
@@ -57,12 +72,20 @@ animal::~animal(){
 
 void animal::draw(){
 
-    SDL_Rect rsdt = SDL_Rect{this->x,this->y,64,64};
+    SDL_Rect rsdt = SDL_Rect{(int)this->x,(int)this->y,64,64};
     SDL_BlitScaled(image_ptr_,NULL,window_surface_ptr_,&rsdt);
 }
 
-
-void sheep::move(){
+int animal::get_type(){
+    return this->type;
+}
+int animal::get_x(){
+    return this->x;
+}
+int animal::get_y(){
+    return this->y;
+}
+void sheep::move(std::vector<animal*> lst_animal){
     if (this->x <= 0)
         this->directionx = 1;
     else if(this->x >=536)
@@ -76,16 +99,20 @@ void sheep::move(){
     this->y = this->y + this->directiony * this->speedy;
 }
 
-void wolf::move(){
-    if (this->x <= 0)
-        this->directionx = 1;
-    else if(this->x >=536)
-        this->directionx = -1;
-    else if(this->y <= 0)
-        this->directiony = 1;
-    else if(this->y >=536)
-        this->directiony = -1;
+void wolf::move(std::vector<animal*> lst_animal){
 
+    animal* nearest = get_nearest(this, 1, lst_animal);
+    
+    if (this->x <= nearest->get_x())
+        this->directionx = 1;
+    else if(this->x >= nearest->get_x())
+        this->directionx = -1;
+    
+    if(this->y <= nearest->get_y())
+        this->directiony = 1;
+    else if(this->y >= nearest->get_y())
+        this->directiony = -1;
+    
     this->x = this->x + this->directionx * this->speedx;
     this->y = this->y + this->directiony * this->speedy;
 }
@@ -119,7 +146,7 @@ void ground::update()
 {
     SDL_FillRect(this->window_surface_ptr_, NULL, SDL_MapRGB(this->window_surface_ptr_->format, 0, 255, 0));
     for (auto itr = lst_animals.begin(); itr != lst_animals.end(); ++itr) {
-        (*itr)->move();
+        (*itr)->move(this->lst_animals);
         (*itr)->draw();
     }
 }
