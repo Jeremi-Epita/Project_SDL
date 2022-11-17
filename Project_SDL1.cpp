@@ -33,7 +33,7 @@ void init() {
         float dst = 10000000;
         animal* nearest = lst_animal[0];
         for (auto itr = lst_animal.begin(); itr != lst_animal.end(); ++itr) {
-            if((*itr)->get_type() == type_target){
+            if((*itr)->get_type() == type_target && (*itr)->get_alive() == true){
                float tmp_dst = std::sqrt(std::pow((a->get_x() - (*itr)->get_x()),2) + std::pow((a->get_y() - (*itr)->get_y()),2));
                 if(tmp_dst<dst)
                 {
@@ -48,6 +48,7 @@ void init() {
 
 
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type){
+    this->alive = true;
     this->type = type;
     this->x = rand() % 536;
     this->y = rand() % 536;
@@ -84,6 +85,12 @@ int animal::get_x(){
 int animal::get_y(){
     return this->y;
 }
+bool animal::get_alive(){
+    return this->alive;
+}
+void animal::set_alive(bool b){
+    this->alive = b;
+}
 void sheep::move(std::vector<animal*> lst_animal){
     if (this->x <= 0)
         this->directionx = 1;
@@ -101,6 +108,10 @@ void sheep::move(std::vector<animal*> lst_animal){
 void wolf::move(std::vector<animal*> lst_animal){
 
     animal* nearest = get_nearest(this, 1, lst_animal);
+    
+    if(std::sqrt(std::pow((this->get_x() - nearest->get_x()),2) + std::pow((this->get_y() - nearest->get_y()),2)) < kill_hitbox ){
+        nearest->set_alive(false);
+    }
     if(nearest->get_type() == 1){
     
     	if (this->x <= nearest->get_x())
@@ -123,7 +134,7 @@ void wolf::move(std::vector<animal*> lst_animal){
     else if(this->y >=536)
         this->directiony = -1;
         
-        }    
+    }    
     this->x = this->x + this->directionx * this->speedx;
     this->y = this->y + this->directiony * this->speedy;
 }
@@ -162,8 +173,10 @@ void ground::update()
 {
     SDL_FillRect(this->window_surface_ptr_, NULL, SDL_MapRGB(this->window_surface_ptr_->format, 0, 255, 0));
     for (auto itr = lst_animals.begin(); itr != lst_animals.end(); ++itr) {
+        if((*itr)->get_alive() == true){
         (*itr)->move(this->lst_animals);
         (*itr)->draw();
+        }
     }
 }
 ////////////////////////////////////////

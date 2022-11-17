@@ -20,6 +20,8 @@ constexpr char wolf_path[] = "../media/wolf.png";
 // of the screen
 constexpr unsigned frame_boundary = 100;
 
+constexpr unsigned kill_hitbox = 32;
+
 // Helper function to initialize SDL
 void init();
 
@@ -39,6 +41,7 @@ protected:
   int directionx;
   int directiony;
   int type;
+  bool alive;
   // todo: Attribute(s) to define its position
 public:
   animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type);
@@ -56,6 +59,8 @@ public:
     int get_type();
     int get_x();
     int get_y();
+    bool get_alive();
+    void set_alive(bool b);
 };
 
 // Insert here:
