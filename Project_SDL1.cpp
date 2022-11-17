@@ -66,7 +66,7 @@ animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, in
 }
 
 animal::~animal(){
-
+    SDL_FreeSurface(this->image_ptr_);
 }
 
 void animal::draw(){
@@ -101,16 +101,29 @@ void sheep::move(std::vector<animal*> lst_animal){
 void wolf::move(std::vector<animal*> lst_animal){
 
     animal* nearest = get_nearest(this, 1, lst_animal);
-    if (this->x <= nearest->get_x())
+    if(nearest->get_type() == 1){
+    
+    	if (this->x <= nearest->get_x())
+        	this->directionx = 1;
+    	else if(this->x >= nearest->get_x())
+        	this->directionx = -1;
+    
+    	if(this->y <= nearest->get_y())
+        	this->directiony = 1;
+    	else if(this->y >= nearest->get_y())
+        	this->directiony = -1;
+    }
+    else{
+        if (this->x <= 0)
         this->directionx = 1;
-    else if(this->x >= nearest->get_x())
+    else if(this->x >=536)
         this->directionx = -1;
-    
-    if(this->y <= nearest->get_y())
+    else if(this->y <= 0)
         this->directiony = 1;
-    else if(this->y >= nearest->get_y())
+    else if(this->y >=536)
         this->directiony = -1;
-    
+        
+        }    
     this->x = this->x + this->directionx * this->speedx;
     this->y = this->y + this->directiony * this->speedy;
 }
@@ -129,6 +142,11 @@ ground::ground(SDL_Surface* window_surface_ptr)
     this->window_surface_ptr_ = window_surface_ptr;
 }
 
+ground::~ground(){
+    for (auto a : this->lst_animals)
+        delete a;
+    this->lst_animals.clear();
+}
 void ground::add_sheep()
 {
     this->lst_animals.push_back(new sheep(this->window_surface_ptr_, 1));

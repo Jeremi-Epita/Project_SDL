@@ -93,7 +93,7 @@ private:
 
 public:
   ground(SDL_Surface* window_surface_ptr); // todo: Ctor
-  ~ground(){}; // todo: Dtor, again for clean up (if necessary)
+  ~ground(); // todo: Dtor, again for clean up (if necessary)
   void update(); // todo: "refresh the screen": Move animals and draw them
   // Possibly other methods, depends on your implementation
   void add_sheep();
