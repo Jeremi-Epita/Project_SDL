@@ -137,6 +137,10 @@ SDL_Surface* animal::get_surface_ptr(){
     return this->window_surface_ptr_;
 }
 
+int sheep::get_sexe(){
+    return this->sexe;
+}
+
 void sheep::move(std::vector<animal*> &lst_animal){
     if(this->repro_cooldown != 0)
         this->repro_cooldown--;
@@ -183,7 +187,7 @@ void sheep::move(std::vector<animal*> &lst_animal){
     sheep* nearest_c = (sheep*)get_nearest(this, 1, lst_animal);
 
     if(nearest_c != NULL && calcul_distance(this,nearest_c) < repro_hitbox ) {
-        if (this-> repro_cooldown == 0 && nearest_c->get_cooldown() == 0){
+        if (this-> repro_cooldown == 0 && nearest_c->get_cooldown() == 0 && this->sexe != nearest_c->get_sexe()){
             lst_animal.push_back(new sheep(this->get_surface_ptr(), 1, this->x, this->y));
             this->repro_cooldown = time_repro_cooldown;
             nearest_c->set_cooldown(time_repro_cooldown);

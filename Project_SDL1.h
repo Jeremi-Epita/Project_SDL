@@ -81,6 +81,7 @@ public:
   void move(std::vector<animal*> &lst_animal) override;
   int get_cooldown();
   int set_cooldown(int t);
+  int sheep::get_sexe();
 };
 
 class wolf : public animal{
