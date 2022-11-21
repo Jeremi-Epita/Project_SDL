@@ -21,7 +21,7 @@ constexpr char wolf_path[] = "../media/wolf.png";
 constexpr unsigned frame_boundary = 100;
 
 constexpr unsigned kill_hitbox = 32;
-
+constexpr unsigned fuite_hitbox = 120;
 // Helper function to initialize SDL
 void init();
 
@@ -59,6 +59,8 @@ public:
     int get_type();
     int get_x();
     int get_y();
+    int get_directionx();
+    int get_directiony();
     bool get_alive();
     void set_alive(bool b);
 };
@@ -66,13 +68,12 @@ public:
 // Insert here:
 // class sheep, derived from animal
 class sheep : public animal {
+private:
+    bool en_fuite;
 public:
   sheep(SDL_Surface* window_surface_ptr,int type);
   void move(std::vector<animal*> lst_animal) override;
-  // todo
-  // Ctor
-  // Dtor
-  // implement functions that are purely virtual in base class
+
 };
 
 class wolf : public animal{
@@ -126,6 +127,9 @@ public:
                              // duration the application should terminate after
                              // 'period' seconds
 };
+
 animal* get_nearest(animal* a, int type_target, std::vector<animal*> lst_animal);
+
+double calcul_distance(animal* a, animal* b);
 
 

@@ -18,23 +18,16 @@ void init() {
                              std::string(IMG_GetError()));
 }
 
-//namespace {
-    // Defining a namespace without a name -> Anonymous workspace
-    // Its purpose is to indicate to the compiler that everything
-    // inside it is UNIQUELY used within this source file.
+////////////////////////////////////////
+//           global fonction          //
+////////////////////////////////////////
 
-    /*SDL_Surface* load_surface_for(const std::string& path,
-                                  SDL_Surface* window_surface_ptr) {
-      // Helper function to load a png for:x
-      //a specific surface
-      // See SDL_ConvertSurface
-    }*/
     animal* get_nearest(animal* a, int type_target, std::vector<animal*> lst_animal){
         float dst = 10000000;
         animal* nearest = lst_animal[0];
         for (auto itr = lst_animal.begin(); itr != lst_animal.end(); ++itr) {
             if((*itr)->get_type() == type_target && (*itr)->get_alive() == true){
-               float tmp_dst = std::sqrt(std::pow((a->get_x() - (*itr)->get_x()),2) + std::pow((a->get_y() - (*itr)->get_y()),2));
+               double tmp_dst = calcul_distance(a,(*itr));
                 if(tmp_dst<dst)
                 {
                     dst = tmp_dst;
@@ -44,8 +37,14 @@ void init() {
         }
         return nearest;
     }
-//} // namespace
 
+double calcul_distance(animal* a, animal* b){
+    return std::sqrt(std::pow((a->get_x() - b->get_x()),2) + std::pow((a->get_y() - b->get_y()),2));
+}
+
+////////////////////////////////////////
+//               animal               //
+////////////////////////////////////////
 
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type){
     this->alive = true;
@@ -71,7 +70,6 @@ animal::~animal(){
 }
 
 void animal::draw(){
-
     SDL_Rect rsdt = SDL_Rect{(int)this->x,(int)this->y,64,64};
     SDL_BlitScaled(image_ptr_,NULL,window_surface_ptr_,&rsdt);
 }
@@ -85,6 +83,14 @@ int animal::get_x(){
 int animal::get_y(){
     return this->y;
 }
+
+int animal::get_directionx(){
+    return this->directionx;
+}
+int animal::get_directiony(){
+    return this->directiony;
+}
+
 bool animal::get_alive(){
     return this->alive;
 }
@@ -92,24 +98,54 @@ void animal::set_alive(bool b){
     this->alive = b;
 }
 void sheep::move(std::vector<animal*> lst_animal){
-    if (this->x <= 0)
+    bool bounce = false;
+    if (this->x <= 0){
         this->directionx = 1;
-    else if(this->x >=536)
+        bounce = true;
+    }
+    else if(this->x >=536) {
         this->directionx = -1;
-    else if(this->y <= 0)
+        bounce = true;
+    }
+    else if(this->y <= 0){
         this->directiony = 1;
-    else if(this->y >=536)
+        bounce = true;
+    }
+    else if(this->y >=536){
         this->directiony = -1;
+        bounce = true;
+    }
 
-    this->x = this->x + this->directionx * this->speedx;
-    this->y = this->y + this->directiony * this->speedy;
+    if (bounce)
+    {
+        this->x = this->x + this->directionx * this->speedx;
+        this->y = this->y + this->directiony * this->speedy;
+        return;
+    }
+
+    animal* nearest = get_nearest(this, 2, lst_animal);
+    if(calcul_distance(this,nearest) < fuite_hitbox ) {
+        this->directionx = nearest->get_directionx();
+        this->directiony = nearest->get_directiony();
+        this->en_fuite = true;
+    }
+    if (en_fuite && calcul_distance(this, nearest) < fuite_hitbox * 1.5)
+    {
+        this->x = this->x + this->directionx * this->speedx * 3;
+        this->y = this->y + this->directiony * this->speedy * 3;
+    }else{
+        en_fuite = false;
+        this->x = this->x + this->directionx * this->speedx;
+        this->y = this->y + this->directiony * this->speedy;
+    }
+
 }
 
 void wolf::move(std::vector<animal*> lst_animal){
 
     animal* nearest = get_nearest(this, 1, lst_animal);
     
-    if(std::sqrt(std::pow((this->get_x() - nearest->get_x()),2) + std::pow((this->get_y() - nearest->get_y()),2)) < kill_hitbox ){
+    if(calcul_distance(this,nearest) < kill_hitbox ){
         nearest->set_alive(false);
     }
     if(nearest->get_type() == 1){
