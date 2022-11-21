@@ -21,8 +21,10 @@ constexpr char wolf_path[] = "../media/wolf.png";
 constexpr unsigned frame_boundary = 100;
 
 constexpr unsigned kill_hitbox = 32;
+constexpr unsigned repro_hitbox = 32;
 constexpr unsigned fuite_hitbox = 120;
 constexpr unsigned hunger_delay = 600;
+constexpr unsigned time_repro_cooldown = 300;
 // Helper function to initialize SDL
 void init();
 
@@ -55,10 +57,12 @@ protected:
 
 public:
   animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type);
+  animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type, int x, int y);
   ~animal();
   void draw();
 
-  virtual void move(std::vector<animal*> lst_animal) = 0;
+  virtual void move(std::vector<animal*> &lst_animal) = 0;
+    SDL_Surface* get_surface_ptr();
     int get_type();
     bool get_alive();
     void set_alive(bool b);
@@ -69,10 +73,14 @@ public:
 class sheep : public animal {
 private:
     bool en_fuite;
+    int repro_cooldown;
+    int sexe;
 public:
   sheep(SDL_Surface* window_surface_ptr,int type);
-  void move(std::vector<animal*> lst_animal) override;
-
+  sheep(SDL_Surface* window_surface_ptr,int type, int x, int y);
+  void move(std::vector<animal*> &lst_animal) override;
+  int get_cooldown();
+  int set_cooldown(int t);
 };
 
 class wolf : public animal{
@@ -80,7 +88,7 @@ private:
     int faim = 0;
 public:
   wolf(SDL_Surface* window_surface_ptr, int type);
-  void move(std::vector<animal*> lst_animal);
+  void move(std::vector<animal*> &lst_animal);
 };
 
 // Insert here:

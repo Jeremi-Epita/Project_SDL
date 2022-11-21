@@ -5,6 +5,7 @@
 #include <numeric>
 #include <random>
 #include <string>
+
 void init() {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) < 0)
@@ -24,9 +25,13 @@ void init() {
 
     animal* get_nearest(animal* a, int type_target, std::vector<animal*> lst_animal){
         float dst = 10000000;
-        animal* nearest = lst_animal[0];
+        animal* nearest = NULL;
+        if (a != lst_animal[0])
+            nearest = lst_animal[0];
+        else
+            nearest = lst_animal[1];
         for (auto itr = lst_animal.begin(); itr != lst_animal.end(); ++itr) {
-            if((*itr)->get_type() == type_target && (*itr)->get_alive()){
+            if((*itr)->get_type() == type_target && (*itr)->get_alive() && (*itr) != a){
                double tmp_dst = calcul_distance(a,(*itr));
                 if(tmp_dst<dst)
                 {
@@ -53,6 +58,25 @@ animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, in
     this->type = type;
     this->x = rand() % 536;
     this->y = rand() % 536;
+    if (this->type == 1){
+        this->speedx = (float)(rand() % 100) / 200 + 0.5;
+        this->speedy = (float)(rand() % 100) / 200 + 0.5;
+    }
+    else{
+        this->speedx = 1;
+        this->speedy = 1;
+    }
+    this->directionx = rand() % 2 == 0 ? -1 : 1;
+    this->directiony = rand() % 2 == 0 ? -1 : 1;
+    this->window_surface_ptr_ = window_surface_ptr;
+    this->image_ptr_ = IMG_Load(file_path.c_str());
+}
+
+animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type, int x, int y){
+    this->alive = true;
+    this->type = type;
+    this->x = x;
+    this->y = y;
     if (this->type == 1){
         this->speedx = (float)(rand() % 100) / 200 + 0.5;
         this->speedy = (float)(rand() % 100) / 200 + 0.5;
@@ -100,7 +124,23 @@ bool animal::get_alive(){
 void animal::set_alive(bool b){
     this->alive = b;
 }
-void sheep::move(std::vector<animal*> lst_animal){
+
+int sheep::get_cooldown(){
+    return this->repro_cooldown;
+}
+
+int sheep::set_cooldown(int t){
+    return this->repro_cooldown = t;
+}
+
+SDL_Surface* animal::get_surface_ptr(){
+    return this->window_surface_ptr_;
+}
+
+void sheep::move(std::vector<animal*> &lst_animal){
+    if(this->repro_cooldown != 0)
+        this->repro_cooldown--;
+
     bool bounce = false;
     if (this->x <= 0){
         this->directionx = 1;
@@ -117,22 +157,20 @@ void sheep::move(std::vector<animal*> lst_animal){
     else if(this->y >=536){
         this->directiony = -1;
         bounce = true;
-    }
-
-    if (bounce)
+    } if (bounce)
     {
         this->x = this->x + this->directionx * this->speedx;
         this->y = this->y + this->directiony * this->speedy;
         return;
     }
 
-    animal* nearest = get_nearest(this, 2, lst_animal);
-    if(nearest != NULL && calcul_distance(this,nearest) < fuite_hitbox ) {
-        this->directionx = nearest->get_directionx();
-        this->directiony = nearest->get_directiony();
+    animal* nearest_w = get_nearest(this, 2, lst_animal);
+    if(nearest_w != NULL && calcul_distance(this,nearest_w) < fuite_hitbox ) {
+        this->directionx = nearest_w->get_directionx();
+        this->directiony = nearest_w->get_directiony();
         this->en_fuite = true;
     }
-    if (nearest != NULL && en_fuite && calcul_distance(this, nearest) < fuite_hitbox * 1.5)
+    if (nearest_w != NULL && en_fuite && calcul_distance(this, nearest_w) < fuite_hitbox * 1.5)
     {
         this->x = this->x + this->directionx * this->speedx * 3;
         this->y = this->y + this->directiony * this->speedy * 3;
@@ -142,9 +180,19 @@ void sheep::move(std::vector<animal*> lst_animal){
         this->y = this->y + this->directiony * this->speedy;
     }
 
+    sheep* nearest_c = (sheep*)get_nearest(this, 1, lst_animal);
+
+    if(nearest_c != NULL && calcul_distance(this,nearest_c) < repro_hitbox ) {
+        if (this-> repro_cooldown == 0 && nearest_c->get_cooldown() == 0){
+            lst_animal.push_back(new sheep(this->get_surface_ptr(), 1, this->x, this->y));
+            this->repro_cooldown = time_repro_cooldown;
+            nearest_c->set_cooldown(time_repro_cooldown);
+        }
+    }
+
 }
 
-void wolf::move(std::vector<animal*> lst_animal){
+void wolf::move(std::vector<animal*> &lst_animal){
     this->faim++;
     if(this->faim >= hunger_delay){
         this->alive = false;
@@ -181,6 +229,13 @@ void wolf::move(std::vector<animal*> lst_animal){
 }
 
 sheep::sheep(SDL_Surface* window_surface_ptr,int type) : animal(sheep_path,window_surface_ptr, type){
+    this->sexe = rand() % 2 == 0 ? 0 : 1;
+    this->repro_cooldown = time_repro_cooldown;
+}
+
+sheep::sheep(SDL_Surface* window_surface_ptr,int type, int x, int y) : animal(sheep_path,window_surface_ptr, type, x, y){
+    this->sexe = rand() % 2 == 0 ? 0 : 1;
+    this->repro_cooldown = time_repro_cooldown;
 }
 
 wolf::wolf(SDL_Surface* window_surface_ptr,int type) : animal(wolf_path,window_surface_ptr, type){
