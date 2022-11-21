@@ -22,6 +22,7 @@ constexpr unsigned frame_boundary = 100;
 
 constexpr unsigned kill_hitbox = 32;
 constexpr unsigned fuite_hitbox = 120;
+constexpr unsigned hunger_delay = 600;
 // Helper function to initialize SDL
 void init();
 
@@ -77,6 +78,8 @@ public:
 };
 
 class wolf : public animal{
+private:
+    int faim = 0;
 public:
   wolf(SDL_Surface* window_surface_ptr, int type);
   void move(std::vector<animal*> lst_animal);

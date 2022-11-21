@@ -26,7 +26,7 @@ void init() {
         float dst = 10000000;
         animal* nearest = lst_animal[0];
         for (auto itr = lst_animal.begin(); itr != lst_animal.end(); ++itr) {
-            if((*itr)->get_type() == type_target && (*itr)->get_alive() == true){
+            if((*itr)->get_type() == type_target && (*itr)->get_alive()){
                double tmp_dst = calcul_distance(a,(*itr));
                 if(tmp_dst<dst)
                 {
@@ -35,6 +35,8 @@ void init() {
                 }
             }
         }
+        if(nearest->get_type() != type_target || !nearest->get_alive())
+            return NULL;
         return nearest;
     }
 
@@ -94,6 +96,7 @@ int animal::get_directiony(){
 bool animal::get_alive(){
     return this->alive;
 }
+
 void animal::set_alive(bool b){
     this->alive = b;
 }
@@ -124,12 +127,12 @@ void sheep::move(std::vector<animal*> lst_animal){
     }
 
     animal* nearest = get_nearest(this, 2, lst_animal);
-    if(calcul_distance(this,nearest) < fuite_hitbox ) {
+    if(nearest != NULL && calcul_distance(this,nearest) < fuite_hitbox ) {
         this->directionx = nearest->get_directionx();
         this->directiony = nearest->get_directiony();
         this->en_fuite = true;
     }
-    if (en_fuite && calcul_distance(this, nearest) < fuite_hitbox * 1.5)
+    if (nearest != NULL && en_fuite && calcul_distance(this, nearest) < fuite_hitbox * 1.5)
     {
         this->x = this->x + this->directionx * this->speedx * 3;
         this->y = this->y + this->directiony * this->speedy * 3;
@@ -142,15 +145,18 @@ void sheep::move(std::vector<animal*> lst_animal){
 }
 
 void wolf::move(std::vector<animal*> lst_animal){
-
+    this->faim++;
+    if(this->faim >= hunger_delay){
+        this->alive = false;
+    }
     animal* nearest = get_nearest(this, 1, lst_animal);
     
-    if(calcul_distance(this,nearest) < kill_hitbox ){
+    if(nearest != NULL && calcul_distance(this,nearest) < kill_hitbox ){
         nearest->set_alive(false);
+        this->faim = 0;
     }
-    if(nearest->get_type() == 1){
-    
-    	if (this->x <= nearest->get_x())
+    if(nearest != NULL){
+        if (this->x <= nearest->get_x())
         	this->directionx = 1;
     	else if(this->x >= nearest->get_x())
         	this->directionx = -1;
@@ -159,18 +165,17 @@ void wolf::move(std::vector<animal*> lst_animal){
         	this->directiony = 1;
     	else if(this->y >= nearest->get_y())
         	this->directiony = -1;
-    }
-    else{
+    } else{
         if (this->x <= 0)
-        this->directionx = 1;
-    else if(this->x >=536)
-        this->directionx = -1;
-    else if(this->y <= 0)
-        this->directiony = 1;
-    else if(this->y >=536)
-        this->directiony = -1;
-        
-    }    
+            this->directionx = 1;
+        else if(this->x >=536)
+            this->directionx = -1;
+        else if(this->y <= 0)
+            this->directiony = 1;
+        else if(this->y >=536)
+            this->directiony = -1;
+    }
+
     this->x = this->x + this->directionx * this->speedx;
     this->y = this->y + this->directiony * this->speedy;
 }
@@ -209,7 +214,7 @@ void ground::update()
 {
     SDL_FillRect(this->window_surface_ptr_, NULL, SDL_MapRGB(this->window_surface_ptr_->format, 0, 255, 0));
     for (auto itr = lst_animals.begin(); itr != lst_animals.end(); ++itr) {
-        if((*itr)->get_alive() == true){
+        if((*itr)->get_alive()){
         (*itr)->move(this->lst_animals);
         (*itr)->draw();
         }
