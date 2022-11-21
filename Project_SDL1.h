@@ -26,8 +26,23 @@ constexpr unsigned hunger_delay = 600;
 // Helper function to initialize SDL
 void init();
 
+class moving_object {
+protected:
+    float x;
+    float y;
+    float speedx;
+    float speedy;
+    int directionx;
+    int directiony;
 
-class animal {
+public:
+    int get_x();
+    int get_y();
+    int get_directionx();
+    int get_directiony();
+};
+
+class animal : public moving_object{
 private:
   SDL_Surface* window_surface_ptr_; // ptr to the surface on which we want the
                                     // animal to be drawn, also non-owning
@@ -35,33 +50,16 @@ private:
   // load_surface_for
   
 protected:
-  float x;
-  float y;
-  float speedx;
-  float speedy;
-  int directionx;
-  int directiony;
   int type;
   bool alive;
-  // todo: Attribute(s) to define its position
+
 public:
   animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type);
-  // todo: The constructor has to load the sdl_surface that corresponds to the
-  // texture
-  ~animal(); // todo: Use the destructor to release memory and "clean up
-               // behind you"
+  ~animal();
+  void draw();
 
-  void draw(); // todo: Draw the animal on the screen <-> window_surface_ptr.
-                 // Note that this function is not virtual, it does not depend
-                 // on the static type of the instance
-
-  virtual void move(std::vector<animal*> lst_animal) = 0; // todo: Animals move around, but in a different
-                           // fashion depending on which type of animal
+  virtual void move(std::vector<animal*> lst_animal) = 0;
     int get_type();
-    int get_x();
-    int get_y();
-    int get_directionx();
-    int get_directiony();
     bool get_alive();
     void set_alive(bool b);
 };
@@ -94,11 +92,9 @@ public:
 // in the zoo example).
 class ground {
 private:
-  // Attention, NON-OWNING ptr, again to the screen
   SDL_Surface* window_surface_ptr_;
-  // Some attribute to store all the wolves and sheep
-  // here
   std::vector<animal*> lst_animals;
+  int score;
 
 public:
   ground(SDL_Surface* window_surface_ptr); // todo: Ctor

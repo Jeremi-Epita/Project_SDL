@@ -79,17 +79,17 @@ void animal::draw(){
 int animal::get_type(){
     return this->type;
 }
-int animal::get_x(){
+int moving_object::get_x(){
     return this->x;
 }
-int animal::get_y(){
+int moving_object::get_y(){
     return this->y;
 }
 
-int animal::get_directionx(){
+int moving_object::get_directionx(){
     return this->directionx;
 }
-int animal::get_directiony(){
+int moving_object::get_directiony(){
     return this->directiony;
 }
 
@@ -191,6 +191,7 @@ wolf::wolf(SDL_Surface* window_surface_ptr,int type) : animal(wolf_path,window_s
 ////////////////////////////////////////
 ground::ground(SDL_Surface* window_surface_ptr)
 {
+    this->score = 0;
     this->window_surface_ptr_ = window_surface_ptr;
 }
 
