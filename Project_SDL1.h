@@ -41,6 +41,7 @@ protected:
 
 public:
     void draw(SDL_Surface* image_ptr_,SDL_Surface* window_surface_ptr_);
+    void move();
     int get_x();
     int get_y();
     int get_directionx();
@@ -54,6 +55,7 @@ public:
     shepherd();
     ~shepherd();
     SDL_Surface* get_image_ptr();
+    void move(int dirx,int diry);
 };
 
 class animal : public moving_object{
@@ -125,6 +127,7 @@ public:
   ~ground(); // todo: Dtor, again for clean up (if necessary)
   void update(); // todo: "refresh the screen": Move animals and draw them
   // Possibly other methods, depends on your implementation
+  void moving_shepherd(int dirx,int diry);
   void add_sheep();
   void add_wolf();
 };

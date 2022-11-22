@@ -57,6 +57,8 @@ shepherd::shepherd() {
     this->image_ptr_ = IMG_Load(shepherd_path);
     this->x = 300;
     this->y = 300;
+    this->speedx = 5;
+    this->speedy = 5;
 }
 
 shepherd::~shepherd() {
@@ -127,6 +129,13 @@ int moving_object::get_directionx(){
 }
 int moving_object::get_directiony(){
     return this->directiony;
+}
+
+void shepherd::move(int dirx, int diry) {
+    std::cout << this->x << " : " << this->y << std::endl;
+    this->x = this->x + dirx * this->speedx;
+    this->y = this->y + diry * this->speedx;
+    std::cout << this->x << " : " << this->y << std::endl;
 }
 
 bool animal::get_alive(){
@@ -300,6 +309,10 @@ void ground::add_sheep()
 }
 //todo iterate into the 2 arrays of animals to delete them
 
+void ground::moving_shepherd(int dirx, int diry) {
+    this->berger->move(dirx,diry);
+}
+
 void ground::add_wolf()
 {
    this->lst_animals.push_back(new wolf(this->window_surface_ptr_, 2));
@@ -349,11 +362,33 @@ int application::loop(unsigned period)
     int frameTime;
     unsigned time = SDL_GetTicks() + period*1000;
     int count = 0;
+    SDL_Event event;
     while(!SDL_TICKS_PASSED(SDL_GetTicks(), time))
     {
-        //std::cout << count++ << std::endl;
         frameStart = SDL_GetTicks();
+        while( SDL_PollEvent( &event ) ){
+            if(event.type == SDL_KEYDOWN) {
+                switch (event.key.keysym.sym) {
+                    case SDLK_z:
+                        std::cout << "z" << std::endl;
+                        this->ground_ptr_->moving_shepherd(0, -1);
+                        break;
+                    case SDLK_s:
+                        std::cout << "s" << std::endl;
+                        this->ground_ptr_->moving_shepherd(0, 1);
+                        break;
+                    case SDLK_q:
+                        std::cout << "q" << std::endl;
+                        this->ground_ptr_->moving_shepherd(-1, 0);
+                        break;
+                    case SDLK_d:
+                        std::cout << "d" << std::endl;
+                        this->ground_ptr_->moving_shepherd(1, 0);
+                        break;
+                }
+            }
 
+        }
         this->ground_ptr_->update();
         SDL_UpdateWindowSurface(this->window_ptr_);
 
