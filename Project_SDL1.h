@@ -14,8 +14,10 @@ constexpr double frame_time = 1. / frame_rate;
 constexpr unsigned frame_width = 1400; // Width of window in pixel
 constexpr unsigned frame_height = 900; // Height of window in pixel
 
-constexpr char sheep_path[] = "../media/sheep.png";
+constexpr char goose_m_path[] = "../media/oie_grise.png";
+constexpr char goose_f_path[] = "../media/oie.png";
 constexpr char wolf_path[] = "../media/wolf.png";
+constexpr char shepherd_path[] = "../media/berger.png";
 // Minimal distance of animals to the border
 // of the screen
 constexpr unsigned frame_boundary = 100;
@@ -38,10 +40,20 @@ protected:
     int directiony;
 
 public:
+    void draw(SDL_Surface* image_ptr_,SDL_Surface* window_surface_ptr_);
     int get_x();
     int get_y();
     int get_directionx();
     int get_directiony();
+};
+
+class shepherd : public moving_object{
+private:
+    SDL_Surface* image_ptr_;
+public:
+    shepherd();
+    ~shepherd();
+    SDL_Surface* get_image_ptr();
 };
 
 class animal : public moving_object{
@@ -56,13 +68,15 @@ protected:
   bool alive;
 
 public:
-  animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type);
-  animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type, int x, int y);
+  animal(SDL_Surface* window_surface_ptr, int type);
+  animal(SDL_Surface* window_surface_ptr, int type, int x, int y);
   ~animal();
-  void draw();
+
 
   virtual void move(std::vector<animal*> &lst_animal) = 0;
     SDL_Surface* get_surface_ptr();
+    SDL_Surface* get_image_ptr();
+    void set_image_ptr(const char* img);
     int get_type();
     bool get_alive();
     void set_alive(bool b);
@@ -81,7 +95,7 @@ public:
   void move(std::vector<animal*> &lst_animal) override;
   int get_cooldown();
   int set_cooldown(int t);
-  int sheep::get_sexe();
+  int get_sexe();
 };
 
 class wolf : public animal{
@@ -103,6 +117,7 @@ class ground {
 private:
   SDL_Surface* window_surface_ptr_;
   std::vector<animal*> lst_animals;
+  shepherd* berger;
   int score;
 
 public:

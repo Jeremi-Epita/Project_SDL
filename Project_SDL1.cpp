@@ -50,10 +50,24 @@ double calcul_distance(animal* a, animal* b){
 }
 
 ////////////////////////////////////////
+//              shepherd              //
+////////////////////////////////////////
+
+shepherd::shepherd() {
+    this->image_ptr_ = IMG_Load(shepherd_path);
+    this->x = 300;
+    this->y = 300;
+}
+
+shepherd::~shepherd() {
+    SDL_FreeSurface(this->image_ptr_);
+}
+
+////////////////////////////////////////
 //               animal               //
 ////////////////////////////////////////
 
-animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type){
+animal::animal(SDL_Surface* window_surface_ptr, int type){
     this->alive = true;
     this->type = type;
     this->x = rand() % 536;
@@ -69,10 +83,9 @@ animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, in
     this->directionx = rand() % 2 == 0 ? -1 : 1;
     this->directiony = rand() % 2 == 0 ? -1 : 1;
     this->window_surface_ptr_ = window_surface_ptr;
-    this->image_ptr_ = IMG_Load(file_path.c_str());
 }
 
-animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, int type, int x, int y){
+animal::animal(SDL_Surface* window_surface_ptr, int type, int x, int y){
     this->alive = true;
     this->type = type;
     this->x = x;
@@ -88,14 +101,13 @@ animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr, in
     this->directionx = rand() % 2 == 0 ? -1 : 1;
     this->directiony = rand() % 2 == 0 ? -1 : 1;
     this->window_surface_ptr_ = window_surface_ptr;
-    this->image_ptr_ = IMG_Load(file_path.c_str());
 }
 
 animal::~animal(){
     SDL_FreeSurface(this->image_ptr_);
 }
 
-void animal::draw(){
+void moving_object::draw(SDL_Surface* image_ptr_,SDL_Surface* window_surface_ptr_){
     SDL_Rect rsdt = SDL_Rect{(int)this->x,(int)this->y,64,64};
     SDL_BlitScaled(image_ptr_,NULL,window_surface_ptr_,&rsdt);
 }
@@ -133,12 +145,24 @@ int sheep::set_cooldown(int t){
     return this->repro_cooldown = t;
 }
 
+SDL_Surface* animal::get_image_ptr(){
+    return this->image_ptr_;
+}
+
 SDL_Surface* animal::get_surface_ptr(){
     return this->window_surface_ptr_;
 }
 
+SDL_Surface* shepherd::get_image_ptr(){
+    return this->image_ptr_;
+}
+
 int sheep::get_sexe(){
     return this->sexe;
+}
+
+void animal::set_image_ptr(const char* file_path){
+    this->image_ptr_ = IMG_Load(file_path);
 }
 
 void sheep::move(std::vector<animal*> &lst_animal){
@@ -232,17 +256,27 @@ void wolf::move(std::vector<animal*> &lst_animal){
     this->y = this->y + this->directiony * this->speedy;
 }
 
-sheep::sheep(SDL_Surface* window_surface_ptr,int type) : animal(sheep_path,window_surface_ptr, type){
+sheep::sheep(SDL_Surface* window_surface_ptr,int type) : animal(window_surface_ptr, type){
+
     this->sexe = rand() % 2 == 0 ? 0 : 1;
     this->repro_cooldown = time_repro_cooldown;
+    if(this->sexe == 0)
+        this->set_image_ptr(goose_f_path);
+    else
+        this->set_image_ptr(goose_m_path);
 }
 
-sheep::sheep(SDL_Surface* window_surface_ptr,int type, int x, int y) : animal(sheep_path,window_surface_ptr, type, x, y){
+sheep::sheep(SDL_Surface* window_surface_ptr,int type, int x, int y) : animal(window_surface_ptr, type, x, y){
     this->sexe = rand() % 2 == 0 ? 0 : 1;
     this->repro_cooldown = time_repro_cooldown;
+    if(this->sexe == 0)
+        this->set_image_ptr(goose_f_path);
+    else
+        this->set_image_ptr(goose_m_path);
 }
 
-wolf::wolf(SDL_Surface* window_surface_ptr,int type) : animal(wolf_path,window_surface_ptr, type){
+wolf::wolf(SDL_Surface* window_surface_ptr,int type) : animal(window_surface_ptr, type){
+    this->set_image_ptr(wolf_path);
 }
 
 ////////////////////////////////////////
@@ -251,6 +285,7 @@ wolf::wolf(SDL_Surface* window_surface_ptr,int type) : animal(wolf_path,window_s
 ground::ground(SDL_Surface* window_surface_ptr)
 {
     this->score = 0;
+    this->berger = new shepherd();
     this->window_surface_ptr_ = window_surface_ptr;
 }
 
@@ -273,10 +308,11 @@ void ground::add_wolf()
 void ground::update()
 {
     SDL_FillRect(this->window_surface_ptr_, NULL, SDL_MapRGB(this->window_surface_ptr_->format, 0, 255, 0));
+    this->berger->draw(this->berger->get_image_ptr(),this->window_surface_ptr_);
     for (auto itr = lst_animals.begin(); itr != lst_animals.end(); ++itr) {
         if((*itr)->get_alive()){
         (*itr)->move(this->lst_animals);
-        (*itr)->draw();
+        (*itr)->draw((*itr)->get_image_ptr(),(*itr)->get_surface_ptr());
         }
     }
 }
@@ -293,9 +329,9 @@ application::application(unsigned n_sheep, unsigned n_wolf)
     this->ground_ptr_ = new ground(this->window_surface_ptr_);
     for( int i = 0; i < n_sheep; i++)
         ground_ptr_->add_sheep();
+
     for( int i = 0; i < n_wolf; i++)
         ground_ptr_->add_wolf();
-
 }
 
 application::~application()
