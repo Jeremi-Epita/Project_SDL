@@ -19,7 +19,7 @@ constexpr char goose_f_path[] = "../media/oie.png";
 constexpr char wolf_path[] = "../media/wolf.png";
 constexpr char shepherd_path[] = "../media/berger.png";
 constexpr char dog_path[] = "../media/dog.png";
-constexpr float orbit_speed = 0.01;
+constexpr float orbit_speed = 0.02;
 // Minimal distance of animals to the border
 // of the screen
 constexpr unsigned frame_boundary = 100;
@@ -104,6 +104,7 @@ public:
 
 class wolf : public animal{
 private:
+    bool en_fuite;
     int faim = 0;
 public:
   wolf(SDL_Surface* window_surface_ptr, int type);

@@ -242,32 +242,38 @@ void wolf::move(std::vector<animal*> &lst_animal){
     if(this->faim >= hunger_delay){
         this->alive = false;
     }
+    animal* nearest_dog = get_nearest(this, 3, lst_animal);
     animal* nearest = get_nearest(this, 1, lst_animal);
-    
-    if(nearest != NULL && calcul_distance(this,nearest) < kill_hitbox ){
-        nearest->set_alive(false);
-        this->faim = 0;
+    if (nearest != NULL && calcul_distance(this, nearest) < kill_hitbox) {
+       nearest->set_alive(false);
+       this->faim = 0;
     }
-    if(nearest != NULL){
-        if (this->x <= nearest->get_x())
-        	this->directionx = 1;
-    	else if(this->x >= nearest->get_x())
-        	this->directionx = -1;
-    
-    	if(this->y <= nearest->get_y())
-        	this->directiony = 1;
-    	else if(this->y >= nearest->get_y())
-        	this->directiony = -1;
-    } else{
-        if (this->x <= 0)
+    if(nearest_dog != NULL && calcul_distance(this,nearest_dog) < fuite_hitbox ) {
+        this->directionx = nearest_dog->get_directionx();
+        this->directiony = nearest_dog->get_directiony();
+        this->en_fuite = true;
+    }
+    if (nearest_dog != NULL && en_fuite && calcul_distance(this, nearest_dog) < fuite_hitbox * 1.5)
+    {
+        this->x = this->x + this->directionx * this->speedx * 3;
+        this->y = this->y + this->directiony * this->speedy * 3;
+    }else{
+        en_fuite = false;
+        this->x = this->x + this->directionx * this->speedx;
+        this->y = this->y + this->directiony * this->speedy;
+    }
+
+      if (nearest != NULL && !en_fuite) {
+         if (this->x <= nearest->get_x())
             this->directionx = 1;
-        else if(this->x >=536)
+         else if (this->x >= nearest->get_x())
             this->directionx = -1;
-        else if(this->y <= 0)
-            this->directiony = 1;
-        else if(this->y >=536)
-            this->directiony = -1;
-    }
+
+      if (this->y <= nearest->get_y())
+         this->directiony = 1;
+      else if (this->y >= nearest->get_y())
+         this->directiony = -1;
+      }
 
     this->x = this->x + this->directionx * this->speedx;
     this->y = this->y + this->directiony * this->speedy;
@@ -275,8 +281,8 @@ void wolf::move(std::vector<animal*> &lst_animal){
 
 void dog::move(std::vector<animal*> &lst_animal){
     this->angle += orbit_speed;
-    this->x = berger->get_x() + 120 * cos(angle);
-    this->y = berger->get_y() + 120 * sin(angle);
+    this->x = berger->get_x() + 100 * cos(angle);
+    this->y = berger->get_y() + 100 * sin(angle);
 }
 
 sheep::sheep(SDL_Surface* window_surface_ptr,int type) : animal(window_surface_ptr, type){
