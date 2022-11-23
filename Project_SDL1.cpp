@@ -273,6 +273,10 @@ void wolf::move(std::vector<animal*> &lst_animal){
     this->y = this->y + this->directiony * this->speedy;
 }
 
+void dog::move(std::vector<animal*> &lst_animal){
+        
+}
+
 sheep::sheep(SDL_Surface* window_surface_ptr,int type) : animal(window_surface_ptr, type){
 
     this->sexe = rand() % 2 == 0 ? 0 : 1;
@@ -295,6 +299,24 @@ sheep::sheep(SDL_Surface* window_surface_ptr,int type, int x, int y) : animal(wi
 wolf::wolf(SDL_Surface* window_surface_ptr,int type) : animal(window_surface_ptr, type){
     this->set_image_ptr(wolf_path);
 }
+
+dog::dog(SDL_Surface* window_surface_ptr, int type, shepherd* berger, int i) : animal(window_surface_ptr, type){
+    this->berger = berger;
+    this->set_image_ptr(dog_path);
+    if (i ==0) {
+        this->x = 300 + cos(360* i) * 120;
+        this->y = 300 + sin(360* i ) * 120;
+    }
+    else if ( i == 1){
+        this->x = 300 + cos(360 * i) * 120;
+        this->y = 300 + sin(360 * i) * 120;
+    }
+    else if (i == 2){
+        this->x = 300 + cos(360* i) * 120;
+        this->y = 300 + sin(360 * i) * 120;
+    }
+}
+
 
 ////////////////////////////////////////
 //               ground               //
@@ -325,7 +347,9 @@ void ground::add_wolf()
 {
    this->lst_animals.push_back(new wolf(this->window_surface_ptr_, 2));
 }
-
+void ground::add_dog(int i){
+    this->lst_animals.push_back(new dog(this->window_surface_ptr_, 3, this->berger, i));
+}
 void ground::update()
 {
     SDL_FillRect(this->window_surface_ptr_, NULL, SDL_MapRGB(this->window_surface_ptr_->format, 0, 255, 0));
@@ -353,6 +377,10 @@ application::application(unsigned n_sheep, unsigned n_wolf)
 
     for( int i = 0; i < n_wolf; i++)
         ground_ptr_->add_wolf();
+
+    for (int i = 0; i <= 2; i++) {
+        ground_ptr_->add_dog(i);
+    }
 }
 
 application::~application()

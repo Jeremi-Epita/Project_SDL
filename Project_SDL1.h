@@ -18,6 +18,7 @@ constexpr char goose_m_path[] = "../media/oie_grise.png";
 constexpr char goose_f_path[] = "../media/oie.png";
 constexpr char wolf_path[] = "../media/wolf.png";
 constexpr char shepherd_path[] = "../media/berger.png";
+constexpr char dog_path[] = "../media/dog.png";
 // Minimal distance of animals to the border
 // of the screen
 constexpr unsigned frame_boundary = 100;
@@ -108,6 +109,15 @@ public:
   void move(std::vector<animal*> &lst_animal);
 };
 
+
+class dog : public animal {
+private:
+    shepherd* berger;
+public:
+    dog(SDL_Surface* window_surface_ptr, int type, shepherd* berger, int i);
+    void move(std::vector<animal*> &lst_animal);
+};
+
 // Insert here:
 // class wolf, derived from animal
 // Use only sheep at first. Once the application works
@@ -130,6 +140,7 @@ public:
   void moving_shepherd(int dirx,int diry);
   void add_sheep();
   void add_wolf();
+  void add_dog(int i);
 };
 
 // The application class, which is in charge of generating the window
