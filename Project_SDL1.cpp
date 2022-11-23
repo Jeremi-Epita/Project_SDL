@@ -133,6 +133,14 @@ int moving_object::get_directiony(){
 
 void shepherd::move(int dirx, int diry) {
     std::cout << this->x << " : " << this->y << std::endl;
+    if(this->x <= -1)
+        this->x = 0;
+    if(this->y <= -1)
+        this->y = 0;
+    if(this->x >= 538)
+        this->x = 537;
+    if(this->y >= 538)
+        this->y = 537;
     this->x = this->x + dirx * this->speedx;
     this->y = this->y + diry * this->speedx;
     std::cout << this->x << " : " << this->y << std::endl;
