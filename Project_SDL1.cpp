@@ -371,12 +371,15 @@ int application::loop(unsigned period)
     unsigned time = SDL_GetTicks() + period*1000;
     int count = 0;
     SDL_Event event;
-    while(!SDL_TICKS_PASSED(SDL_GetTicks(), time))
+    bool quit = false;
+    while(!SDL_TICKS_PASSED(SDL_GetTicks(), time) && !quit)
     {
         frameStart = SDL_GetTicks();
         while( SDL_PollEvent( &event ) ){
             if(event.type == SDL_KEYDOWN) {
                 switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        quit = true;  
                     case SDLK_z:
                         std::cout << "z" << std::endl;
                         this->ground_ptr_->moving_shepherd(0, -1);
@@ -405,6 +408,7 @@ int application::loop(unsigned period)
         {
             SDL_Delay(frameDelay - frameTime);
         }
+
     }
     return 0;
 }
