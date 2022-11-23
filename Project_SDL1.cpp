@@ -274,7 +274,9 @@ void wolf::move(std::vector<animal*> &lst_animal){
 }
 
 void dog::move(std::vector<animal*> &lst_animal){
-        
+    this->angle += orbit_speed;
+    this->x = berger->get_x() + 120 * cos(angle);
+    this->y = berger->get_y() + 120 * sin(angle);
 }
 
 sheep::sheep(SDL_Surface* window_surface_ptr,int type) : animal(window_surface_ptr, type){
@@ -301,20 +303,9 @@ wolf::wolf(SDL_Surface* window_surface_ptr,int type) : animal(window_surface_ptr
 }
 
 dog::dog(SDL_Surface* window_surface_ptr, int type, shepherd* berger, int i) : animal(window_surface_ptr, type){
+    this->angle = 400*i;
     this->berger = berger;
     this->set_image_ptr(dog_path);
-    if (i ==0) {
-        this->x = 300 + cos(360* i) * 120;
-        this->y = 300 + sin(360* i ) * 120;
-    }
-    else if ( i == 1){
-        this->x = 300 + cos(360 * i) * 120;
-        this->y = 300 + sin(360 * i) * 120;
-    }
-    else if (i == 2){
-        this->x = 300 + cos(360* i) * 120;
-        this->y = 300 + sin(360 * i) * 120;
-    }
 }
 
 
