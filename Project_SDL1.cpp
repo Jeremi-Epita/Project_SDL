@@ -132,7 +132,6 @@ int moving_object::get_directiony(){
 }
 
 void shepherd::move(int dirx, int diry) {
-    std::cout << this->x << " : " << this->y << std::endl;
     if(this->x <= -1)
         this->x = 0;
     if(this->y <= -1)
@@ -143,7 +142,6 @@ void shepherd::move(int dirx, int diry) {
         this->y = 537;
     this->x = this->x + dirx * this->speedx;
     this->y = this->y + diry * this->speedx;
-    std::cout << this->x << " : " << this->y << std::endl;
 }
 
 bool animal::get_alive(){
@@ -391,7 +389,7 @@ application::application(unsigned n_sheep, unsigned n_wolf)
     for( int i = 0; i < n_wolf; i++)
         ground_ptr_->add_wolf();
 
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 3; i++) {
         ground_ptr_->add_dog(i);
     }
 }
