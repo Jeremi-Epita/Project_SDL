@@ -281,6 +281,22 @@ void wolf::move(std::vector<animal*> &lst_animal){
 
 void dog::move(std::vector<animal*> &lst_animal){
     this->angle += orbit_speed;
+    if ((cos(angle) >= 0 && cos(angle) <= 1) && (sin(angle) >= -1 && sin(angle) <= 0)) {
+        this->directionx = 1;
+        this->directiony = -1;
+    }
+    if ((cos(angle) <= 1 && cos(angle) >= 0) && (sin(angle) >= 0 && sin(angle) <= 1)) {
+        this->directionx = 1;
+        this->directiony = 1;
+    }
+    if ((cos(angle) >= -1 && cos(angle) <= 0) && (sin(angle) <= 0 && sin(angle) >= -1)) {
+        this->directionx = -1;
+        this->directiony = -1;
+    }
+    if ((cos(angle) <= 0 && cos(angle) >= -1) && (sin(angle) <= 1 && sin(angle) >= 0)) {
+        this->directionx = -1;
+        this->directiony = 1;
+    }
     this->x = berger->get_x() + 100 * cos(angle);
     this->y = berger->get_y() + 100 * sin(angle);
 }
@@ -375,7 +391,7 @@ application::application(unsigned n_sheep, unsigned n_wolf)
     for( int i = 0; i < n_wolf; i++)
         ground_ptr_->add_wolf();
 
-    for (int i = 0; i <= 2; i++) {
+    for (int i = 0; i < 1; i++) {
         ground_ptr_->add_dog(i);
     }
 }
@@ -406,19 +422,15 @@ int application::loop(unsigned period)
                     case SDLK_ESCAPE:
                         quit = true;  
                     case SDLK_z:
-                        std::cout << "z" << std::endl;
                         this->ground_ptr_->moving_shepherd(0, -1);
                         break;
                     case SDLK_s:
-                        std::cout << "s" << std::endl;
                         this->ground_ptr_->moving_shepherd(0, 1);
                         break;
                     case SDLK_q:
-                        std::cout << "q" << std::endl;
                         this->ground_ptr_->moving_shepherd(-1, 0);
                         break;
                     case SDLK_d:
-                        std::cout << "d" << std::endl;
                         this->ground_ptr_->moving_shepherd(1, 0);
                         break;
                 }
