@@ -23,7 +23,7 @@ constexpr float orbit_speed = 0.02;
 // Minimal distance of animals to the border
 // of the screen
 constexpr unsigned frame_boundary = 100;
-
+constexpr unsigned size_vector_animals = 500;
 constexpr unsigned kill_hitbox = 32;
 constexpr unsigned repro_hitbox = 32;
 constexpr unsigned fuite_hitbox = 120;

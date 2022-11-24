@@ -334,6 +334,7 @@ dog::dog(SDL_Surface* window_surface_ptr, int type, shepherd* berger, int i) : a
 ////////////////////////////////////////
 ground::ground(SDL_Surface* window_surface_ptr)
 {
+    this->lst_animals.reserve(size_vector_animals);
     this->score = 0;
     this->berger = new shepherd();
     this->window_surface_ptr_ = window_surface_ptr;
@@ -366,6 +367,7 @@ void ground::update()
     SDL_FillRect(this->window_surface_ptr_, NULL, SDL_MapRGB(this->window_surface_ptr_->format, 0, 255, 0));
     this->berger->draw(this->berger->get_image_ptr(),this->window_surface_ptr_);
     for (auto itr = lst_animals.begin(); itr != lst_animals.end(); ++itr) {
+        std::cout << lst_animals.size() << std::endl;
         if((*itr)->get_alive()){
         (*itr)->move(this->lst_animals);
         (*itr)->draw((*itr)->get_image_ptr(),(*itr)->get_surface_ptr());
