@@ -11,9 +11,6 @@
 // Defintions
 constexpr double frame_rate = 60.0; // refresh rate
 constexpr double frame_time = 1. / frame_rate;
-constexpr unsigned frame_width = 1400; // Width of window in pixel
-constexpr unsigned frame_height = 900; // Height of window in pixel
-
 constexpr char goose_m_path[] = "../media/oie_grise.png";
 constexpr char goose_f_path[] = "../media/oie.png";
 constexpr char wolf_path[] = "../media/wolf.png";
@@ -22,6 +19,7 @@ constexpr char dog_path[] = "../media/dog.png";
 constexpr float orbit_speed = 0.02;
 // Minimal distance of animals to the border
 // of the screen
+constexpr unsigned picture_size = 64; //animal
 constexpr unsigned frame_boundary = 100;
 constexpr unsigned size_vector_animals = 500;
 constexpr unsigned kill_hitbox = 32;

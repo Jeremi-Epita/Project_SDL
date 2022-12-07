@@ -6,6 +6,9 @@
 #include <random>
 #include <string>
 
+int screen_w;
+int screen_h;
+
 void init() {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) < 0)
@@ -55,8 +58,8 @@ double calcul_distance(animal* a, animal* b){
 
 shepherd::shepherd() {
     this->image_ptr_ = IMG_Load(shepherd_path);
-    this->x = 300;
-    this->y = 300;
+    this->x = screen_w/2;
+    this->y = screen_h/2;
     this->speedx = 5;
     this->speedy = 5;
 }
@@ -72,8 +75,8 @@ shepherd::~shepherd() {
 animal::animal(SDL_Surface* window_surface_ptr, int type){
     this->alive = true;
     this->type = type;
-    this->x = rand() % 536;
-    this->y = rand() % 536;
+    this->x = rand() % (screen_w - picture_size);
+    this->y = rand() % (screen_h - picture_size);
     if (this->type == 1){
         this->speedx = (float)(rand() % 100) / 200 + 0.5;
         this->speedy = (float)(rand() % 100) / 200 + 0.5;
@@ -136,10 +139,10 @@ void shepherd::move(int dirx, int diry) {
         this->x = 0;
     if(this->y <= -1)
         this->y = 0;
-    if(this->x >= 538)
-        this->x = 537;
-    if(this->y >= 538)
-        this->y = 537;
+    if(this->x >= screen_w - picture_size)
+        this->x = screen_w - picture_size;
+    if(this->y >= screen_h - picture_size)
+        this->y = screen_h - picture_size;
     this->x = this->x + dirx * this->speedx;
     this->y = this->y + diry * this->speedx;
 }
@@ -189,7 +192,7 @@ void sheep::move(std::vector<animal*> &lst_animal){
         this->directionx = 1;
         bounce = true;
     }
-    else if(this->x >=536) {
+    else if(this->x >= screen_w - picture_size) {
         this->directionx = -1;
         bounce = true;
     }
@@ -197,7 +200,7 @@ void sheep::move(std::vector<animal*> &lst_animal){
         this->directiony = 1;
         bounce = true;
     }
-    else if(this->y >=536){
+    else if(this->y >= screen_h - picture_size){
         this->directiony = -1;
         bounce = true;
     } if (bounce)
@@ -349,7 +352,6 @@ void ground::add_sheep()
 {
     this->lst_animals.push_back(new sheep(this->window_surface_ptr_, 1));
 }
-//todo iterate into the 2 arrays of animals to delete them
 
 void ground::moving_shepherd(int dirx, int diry) {
     this->berger->move(dirx,diry);
@@ -367,7 +369,6 @@ void ground::update()
     SDL_FillRect(this->window_surface_ptr_, NULL, SDL_MapRGB(this->window_surface_ptr_->format, 0, 255, 0));
     this->berger->draw(this->berger->get_image_ptr(),this->window_surface_ptr_);
     for (auto itr = lst_animals.begin(); itr != lst_animals.end(); ++itr) {
-        std::cout << lst_animals.size() << std::endl;
         if((*itr)->get_alive()){
         (*itr)->move(this->lst_animals);
         (*itr)->draw((*itr)->get_image_ptr(),(*itr)->get_surface_ptr());
@@ -380,7 +381,8 @@ void ground::update()
 application::application(unsigned n_sheep, unsigned n_wolf)
 {
     srand(time(NULL));
-    this->window_ptr_ = SDL_CreateWindow("Jeu",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,600,600,0);
+    this->window_ptr_ = SDL_CreateWindow("Jeu",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,0,0,SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_GetWindowSize(this->window_ptr_,&screen_w,&screen_h);
     this->window_surface_ptr_ = SDL_GetWindowSurface(this->window_ptr_);
     SDL_FillRect(this->window_surface_ptr_, NULL, SDL_MapRGB(this->window_surface_ptr_->format, 0, 255, 0));
     SDL_UpdateWindowSurface(this->window_ptr_);
@@ -414,7 +416,7 @@ int application::loop(unsigned period)
     SDL_Event event;
     bool quit = false;
     while(!SDL_TICKS_PASSED(SDL_GetTicks(), time) && !quit)
-    {
+    { 
         frameStart = SDL_GetTicks();
         while( SDL_PollEvent( &event ) ){
             if(event.type == SDL_KEYDOWN) {
