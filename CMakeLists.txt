@@ -1,5 +1,5 @@
 ﻿cmake_minimum_required (VERSION 3.0)
-project ("Project_SDL_sub")
+project ("Project_SDL")
 
 IF(WIN32)
   message(STATUS "Building for windows")
@@ -31,7 +31,6 @@ ELSE()
   find_package(SDL2_IMAGE REQUIRED)
   include_directories(${SDL2_INCLUDE_DIRS})
   include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
-
-  add_executable(SDL_part1 main.cpp Project_SDL1.cpp)
-  target_link_libraries(SDL_part1 ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
+  add_executable(The_Goose_Game main.cpp Project_SDL.cpp)
+  target_link_libraries(The_Goose_Game ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
 ENDIF()

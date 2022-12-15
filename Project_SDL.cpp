@@ -1,4 +1,4 @@
-﻿#include "Project_SDL1.h"
+﻿#include "Project_SDL.h"
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
@@ -338,9 +338,12 @@ dog::dog(SDL_Surface* window_surface_ptr, int type, shepherd* berger, int i) : a
 ground::ground(SDL_Surface* window_surface_ptr)
 {
     this->lst_animals.reserve(size_vector_animals);
-    this->score = 0;
     this->berger = new shepherd();
     this->window_surface_ptr_ = window_surface_ptr;
+}
+
+std::vector<animal*> ground::getLstAnimals(){
+    return this->lst_animals;
 }
 
 ground::~ground(){
@@ -387,15 +390,15 @@ application::application(unsigned n_sheep, unsigned n_wolf)
     SDL_FillRect(this->window_surface_ptr_, NULL, SDL_MapRGB(this->window_surface_ptr_->format, 0, 255, 0));
     SDL_UpdateWindowSurface(this->window_ptr_);
     this->ground_ptr_ = new ground(this->window_surface_ptr_);
-    for( int i = 0; i < n_sheep; i++)
-        ground_ptr_->add_sheep();
-
-    for( int i = 0; i < n_wolf; i++)
-        ground_ptr_->add_wolf();
-
     for (int i = 0; i < 3; i++) {
         ground_ptr_->add_dog(i);
     }
+    for( int i = 0; i < n_sheep; i++)
+        ground_ptr_->add_sheep();
+    for( int i = 0; i < n_wolf; i++)
+        ground_ptr_->add_wolf();
+
+
 }
 
 application::~application()
@@ -449,5 +452,18 @@ int application::loop(unsigned period)
         }
 
     }
+    int score = 0;
+    for (auto itr = this->ground_ptr_->getLstAnimals().begin(); itr != this->ground_ptr_->getLstAnimals().end(); ++itr) {
+        if((*itr) != NULL && (*itr)->get_type() == 1)
+        {
+            if((*itr)->get_alive())
+                score += 100;
+        }
+
+    }
+    if(!quit)
+        std::cout << "Votre score est de : " << score << std::endl;
+    else
+        std::cout << "Pas de score pour vous, jouez jusqu'à la fin !" << std::endl;
     return 0;
 }

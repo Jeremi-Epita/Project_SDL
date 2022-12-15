@@ -131,13 +131,13 @@ private:
   SDL_Surface* window_surface_ptr_;
   std::vector<animal*> lst_animals;
   shepherd* berger;
-  int score;
 
 public:
   ground(SDL_Surface* window_surface_ptr); // todo: Ctor
   ~ground(); // todo: Dtor, again for clean up (if necessary)
   void update(); // todo: "refresh the screen": Move animals and draw them
   // Possibly other methods, depends on your implementation
+  std::vector<animal*> getLstAnimals();
   void moving_shepherd(int dirx,int diry);
   void add_sheep();
   void add_wolf();
