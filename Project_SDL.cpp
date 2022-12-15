@@ -113,7 +113,7 @@ animal::~animal(){
 }
 
 void moving_object::draw(SDL_Surface* image_ptr_,SDL_Surface* window_surface_ptr_){
-    SDL_Rect rsdt = SDL_Rect{(int)this->x,(int)this->y,64,64};
+    SDL_Rect rsdt = SDL_Rect{(int)this->x,(int)this->y,picture_size,picture_size};
     SDL_BlitScaled(image_ptr_,NULL,window_surface_ptr_,&rsdt);
 }
 

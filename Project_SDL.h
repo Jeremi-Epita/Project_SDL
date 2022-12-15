@@ -19,12 +19,12 @@ constexpr char dog_path[] = "../media/dog.png";
 constexpr float orbit_speed = 0.02;
 // Minimal distance of animals to the border
 // of the screen
-constexpr unsigned picture_size = 64; //animal
+constexpr unsigned picture_size = 128; //animal
 constexpr unsigned frame_boundary = 100;
 constexpr unsigned size_vector_animals = 500;
-constexpr unsigned kill_hitbox = 32;
-constexpr unsigned repro_hitbox = 32;
-constexpr unsigned fuite_hitbox = 120;
+constexpr unsigned kill_hitbox = 64;
+constexpr unsigned repro_hitbox = 64;
+constexpr unsigned fuite_hitbox = 240;
 constexpr unsigned hunger_delay = 600;
 constexpr unsigned time_repro_cooldown = 300;
 // Helper function to initialize SDL
